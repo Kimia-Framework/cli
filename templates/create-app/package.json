@@ -1,0 +1,10 @@
+{
+  "name": "kimia-app",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@kimia-framework/core": "^1.0.0"
+  }
+}

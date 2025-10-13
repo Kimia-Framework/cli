@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="{{ __('info.code')}}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="{{asset('/favicon.png')}}" />
+    <title>
+        {{__('_app_title_')}}
+    </title>
+
+    <!-- font defined -->
+    <style>
+        @font-face {
+            font-family: "mainFont";
+            font-style: normal;
+            src: url("{{shared('fonts/' + __('info.defaultFontName'), true)}}") format("truetype");
+            ;
+        }
+
+        :root {
+            --font-family-sans-serif: mainFont, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+                "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+                "Liberation Mono", "Courier New", monospace;
+        }
+
+        html,
+        body {
+            font-family: "mainFont", sans-serif !important;
+        }
+    </style>
+    <!-- styles -->
+    <link rel="stylesheet" href="{{shared('Material-Icons/icon.css')}}">
+    <link rel="stylesheet" href="{{shared('material/material.min.css')}}">
+    <link rel="stylesheet" href="{{shared('iziToast/iziToast.min.css')}}">
+    <!-- scripts -->
+    <script src="{{shared('js/jquery3.js')}}"></script>
+    <script src="{{shared('js/vue.min.js')}}"></script>
+    {% block head %}{% endblock %}
+
+</head>
+
+<body style="direction:{{__('info.direction')}}">
+
+    <!-- main content -->
+    {% block content %}{% endblock %}
+    <!-- main scripts-->
+    <script src="{{shared('iziToast/iziToast.min.js')}}"></script>
+    <script src="{{shared('material/material.min.js')}}"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+
+</html>
