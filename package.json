@@ -1,21 +1,26 @@
 {
   "name": "@kimia-framework/cli",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Kimia Framework CLI",
   "bin": {
     "kimia": "./bin/kimia.js"
+  },
+  "scripts": {
+    "release": "npm publish --access public"
   },
   "files": [
     "bin",
     "commands",
     "templates"
   ],
-  "keywords": ["cli", "kimia", "framework"],
+  "keywords": [
+    "cli",
+    "kimia",
+    "framework"
+  ],
   "author": "madkne",
   "license": "ISC",
   "dependencies": {
-    "commander": "^11.0.0",
-    "fs-extra": "^11.1.1",
-    "inquirer": "^9.2.12"
+    "commander": "^11.0.0"
   }
 }

@@ -4,6 +4,7 @@ import { AppView } from "../app/views/views";
 export const ROUTES: HttpRoute<AppView, AppMiddleware>[] = [
   {
     path: "/",
-    template: "layout/base",
+    template: "index",
+    excludeMiddlewares: ["Authentication"],
   },
 ];

@@ -1,10 +1,45 @@
 {
-  "name": "kimia-app",
-  "version": "0.1.0",
-  "scripts": {
-    "dev": "node src/index.js"
-  },
-  "dependencies": {
-    "@kimia-framework/core": "^1.0.0"
-  }
+    "name": "_app_name_",
+    "version": "1.0.0",
+    "description": "",
+    "main": "build/local.js",
+    "scripts": {
+        "build": "tsc -b tsconfig.json",
+        "start": "node local.js",
+        "start:dev": "node build/local.js dev",
+        "dev": "concurrently \"tsc -b -w tsconfig.json\" \"nodemon --ext 'js' --ignore 'storage/*' --ignore 'resources/frontend' --ignore 'resources/assets' --trace-warnings build/local.js dev\"",
+    },
+    "keywords": [],
+    "dependencies": {
+        "@kimia-framework/core": "^0.10.88",
+        "adm-zip": "^0.5.9",
+        "connect-multiparty": "^2.2.0",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^9.0.2",
+        "live-plugin-manager": "^1.0.0",
+        "mime-types": "^2.1.35",
+        "multer": "^1.4.5-lts.1",
+        "node-machine-id": "^1.1.12",
+        "sequelize": "^6.37.5",
+        "signal-exit": "^4.1.0",
+        "sqlite3": "^5.0.2",
+        "swagger-ui-express": "^4.6.0",
+        "tslib": "^2.5.0",
+        "twing": "^5.0.2",
+        "typescript": "^4.9.5",
+    },
+    "devDependencies": {
+        "@types/adm-zip": "^0.5.0",
+        "@types/express": "^4.17.11",
+        "@types/multer": "^1.4.7",
+        "@types/node": "^14.18.42",
+        "@types/sequelize": "^4.28.9",
+        "concurrently": "^5.3.0",
+        "nodemon": "^3.1.4",
+        "source-map-support": "^0.5.21",
+        "typescript-json-schema": "^0.65.1",
+    },
+    "author": "YOUR NAME",
+    "license": "ISC"
 }

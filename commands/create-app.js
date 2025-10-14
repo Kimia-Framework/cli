@@ -1,4 +1,4 @@
-const fs = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
@@ -126,55 +126,10 @@ async function createApp(appName, lang) {
     },
     {
       path: "package.json",
-      content: JSON.stringify(
-        {
-          name: appName,
-          version: "1.0.0",
-          description: "",
-          main: "build/local.js",
-          scripts: {
-            build: "tsc -b tsconfig.json",
-            start: "node local.js",
-            "start:dev": "node build/local.js dev",
-            dev: "concurrently \"tsc -b -w tsconfig.json\" \"nodemon --ext 'js' --ignore 'storage/*' --ignore 'resources/frontend' --ignore 'resources/assets' --trace-warnings build/local.js dev\"",
-          },
-          keywords: [],
-          dependencies: {
-            "@kimia-framework/core": "^0.10.87",
-            "adm-zip": "^0.5.9",
-            "connect-multiparty": "^2.2.0",
-            cors: "^2.8.5",
-            express: "^4.17.1",
-            jsonwebtoken: "^9.0.2",
-            "live-plugin-manager": "^1.0.0",
-            "mime-types": "^2.1.35",
-            multer: "^1.4.5-lts.1",
-            "node-machine-id": "^1.1.12",
-            sequelize: "^6.37.5",
-            "signal-exit": "^4.1.0",
-            sqlite3: "^5.0.2",
-            "swagger-ui-express": "^4.6.0",
-            tslib: "^2.5.0",
-            twing: "^5.0.2",
-            typescript: "^4.9.5",
-          },
-          devDependencies: {
-            "@types/adm-zip": "^0.5.0",
-            "@types/express": "^4.17.11",
-            "@types/multer": "^1.4.7",
-            "@types/node": "^14.18.42",
-            "@types/sequelize": "^4.28.9",
-            concurrently: "^5.3.0",
-            nodemon: "^3.1.4",
-            "source-map-support": "^0.5.21",
-            "typescript-json-schema": "^0.65.1",
-          },
-          author: "YOUR NAME",
-          license: "ISC",
-        },
-        undefined,
-        2
-      ),
+      template: "package.json",
+      vars: {
+        _app_name_: appName,
+      },
     },
     {
       path: "tsconfig.json",
@@ -226,12 +181,19 @@ async function createApp(appName, lang) {
         {
           SERVER_PORT: 8081,
           STORAGE: {
-            type: "local",
             localPath: path.join(targetDir, "storage"),
           },
           DEFAULT_LOCALE: lang,
           OPEN_APPS: [appName],
           DEFAULT_APP_NAME: appName,
+          APPS_PATH: path.join(path.dirname(targetDir), "__app__", "build"),
+          APPS_RESOURCES_PATH: path.dirname(targetDir),
+          SHARED_PATH: path.join(path.dirname(targetDir), "shared"),
+          DATABASE_INFO: {
+            driver: "sqlite",
+            path: path.join(targetDir, "storage", "database.db"),
+            dbName: "v2",
+          },
         },
         null,
         2
