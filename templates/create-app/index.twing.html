@@ -5,8 +5,27 @@
 
 {% block content %}
 
-<div style="text-align:center">
-    <h1><strong>_app_title_</strong> Application worked!</h1>
-    Powered by <a target="_blank" href="https://kimia-framework.ir">@KimiaFramework</a>
+<div class="mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
+    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" style="text-align: center; padding: 2rem;">
+      <div class="mdc-card" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+        <div class="mdc-card__content">
+          <h1 class="mdc-typography--headline4" style="margin-bottom: 1rem;">
+            <strong>_app_title_</strong> Application
+          </h1>
+          <p class="mdc-typography--body1" style="margin-bottom: 2rem;">
+            Your application has been successfully created and is working! Powered by 
+            <a href="https://kimia-framework.ir" target="_blank" class="mdc-link">@KimiaFramework</a>
+          </p>
+          <div style="display: flex; justify-content: center; gap: 1rem;">
+            <a href="_app_name_/api-docs" class="mdc-button mdc-button--raised">
+              <span class="mdc-button__label">API Documentation</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}

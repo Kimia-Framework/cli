@@ -147,6 +147,7 @@ async function createApp(appName, lang) {
       template: "index.twing.html",
       vars: {
         _app_title_: camelAppName,
+        _app_name_: appName,
       },
     },
     {
