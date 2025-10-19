@@ -6,12 +6,13 @@ const InitCore = require("../commands/init-core");
 
 const program = new Command();
 
-program.name("kimia").description("Kimia Framework CLI").version("1.2.0");
+program.name("kimia").description("Kimia Framework CLI").version("1.2.1");
 
 program
   .command("create-app")
   .argument("<app-name>", "Application name")
   .argument("[lang]", "Default language of application", "fa")
+  .option("-m --multiple", "advanced mode (for multiple applications)")
   .alias("a")
   .description("Create a new Kimia application")
   .action(createApp);

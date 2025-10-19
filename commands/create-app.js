@@ -2,13 +2,32 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-async function createApp(appName, lang) {
+async function createApp(appName, lang, opts) {
   const targetDir = path.resolve(process.cwd(), appName);
-
+  // console.log({ appName, lang, opts });
+  const isAdvancedMode = Boolean(opts.multiple);
+  const advancedProjectDir = path.dirname(targetDir);
   // Check if directory already exists
   if (fs.existsSync(targetDir)) {
     console.error(`Error: Directory '${appName}' already exists!`);
     process.exit(1);
+  }
+  if (isAdvancedMode) {
+    console.log(`'${advancedProjectDir}' path in Advanced mode`);
+  }
+
+  // =>if advanced mode
+  if (isAdvancedMode) {
+    const installed = await isPnpmInstalled();
+    // console.log("pnpm installed:", installed);
+
+    if (installed) {
+      console.log("✅ pnpm is available");
+    } else {
+      console.log(
+        "❌ pnpm is not installed or not in PATH (you need for advanced mode!)"
+      );
+    }
   }
 
   console.log(`Creating Kimia app in ${targetDir}...`);
@@ -122,7 +141,7 @@ async function createApp(appName, lang) {
     },
     {
       path: "local.ts",
-      template: "local.ts",
+      template: isAdvancedMode ? "multiple-local.ts" : "local.ts",
     },
     {
       path: "package.json",
@@ -182,17 +201,21 @@ async function createApp(appName, lang) {
         {
           SERVER_PORT: 8081,
           STORAGE: {
-            localPath: path.join(targetDir, "storage"),
+            localPath: isAdvancedMode
+              ? path.join(advancedProjectDir, "storage")
+              : path.join(targetDir, "storage"),
           },
           DEFAULT_LOCALE: lang,
           OPEN_APPS: [appName],
           DEFAULT_APP_NAME: appName,
-          APPS_PATH: path.join(path.dirname(targetDir), "__app__", "build"),
-          APPS_RESOURCES_PATH: path.dirname(targetDir),
-          SHARED_PATH: path.join(path.dirname(targetDir), "shared"),
+          APPS_PATH: path.join(advancedProjectDir, "__app__", "build"),
+          APPS_RESOURCES_PATH: advancedProjectDir,
+          SHARED_PATH: path.join(advancedProjectDir, "shared"),
           DATABASE_INFO: {
             driver: "sqlite",
-            path: path.join(targetDir, "storage", "database.db"),
+            path: isAdvancedMode
+              ? path.join(advancedProjectDir, "storage", "database.db")
+              : path.join(targetDir, "storage", "database.db"),
             dbName: "v2",
           },
         },
@@ -217,14 +240,40 @@ async function createApp(appName, lang) {
         }
       }
       content = templateContent;
+      // =>if advanced mode
+      if (isAdvancedMode) {
+        if (
+          f.path === "settings.json" &&
+          fs.existsSync(path.join(advancedProjectDir, "settings.json"))
+        ) {
+          continue;
+        }
+        if (f.template === "package.json") {
+          const tmpContent = JSON.parse(content);
+          delete tmpContent["dependencies"]["@kimia-framework/core"];
+          tmpContent["dependencies"]["@core"] = "workspace:../core";
+          content = JSON.stringify(tmpContent, null, 2);
+        } else {
+          content = content.replace(/\@kimia\-framework\/core/g, "@core");
+        }
+      }
     }
-    fs.writeFileSync(path.join(targetDir, f.path), content);
+    let writeFilePath = path.join(targetDir, f.path);
+    if (isAdvancedMode) {
+      if (f.path === "settings.json") {
+        writeFilePath = path.join(advancedProjectDir, "settings.json");
+      }
+    }
+    fs.writeFileSync(writeFilePath, content);
   }
 
   // Install dependencies
   console.log("Installing dependencies...");
   try {
-    execSync("npm install", { cwd: targetDir, stdio: "inherit" });
+    execSync(isAdvancedMode ? "pnpm install" : "npm install", {
+      cwd: targetDir,
+      stdio: "inherit",
+    });
   } catch (error) {
     console.error("Dependency installation failed!");
     process.exit(1);
@@ -233,13 +282,39 @@ async function createApp(appName, lang) {
   console.log("\n✅ Project created successfully!");
   console.log(`\nNext steps:`);
   console.log(`  cd ${appName}`);
-  console.log(`  npm run dev`);
+  console.log(isAdvancedMode ? "  pnpm run dev" : `  npm run dev`);
 }
 
 function snakeToCamel(snakeCaseString) {
   return snakeCaseString.replace(/(_\w)/g, (match) => {
     return match[1].toUpperCase();
   });
+}
+
+/**
+ * Checks if pnpm is installed and available in PATH
+ * @returns {Promise<boolean>} true if pnpm is installed, false otherwise
+ */
+async function isPnpmInstalled() {
+  try {
+    // Try to get pnpm version (works on Windows, macOS, Linux)
+    await execAsync("pnpm --version", {
+      timeout: 5000, // 5 second timeout
+      // Prevent hanging on systems with prompts
+      env: { ...process.env, CI: "true" },
+    });
+    return true;
+  } catch (error) {
+    // Common cases:
+    // - ENOENT: command not found
+    // - Other errors: pnpm exists but failed to run (still counts as installed)
+    if (error.code === "ENOENT") {
+      return false;
+    }
+    // If it's any other error (e.g., permission, corrupted install),
+    // we assume pnpm is present but broken → treat as "installed"
+    return true;
+  }
 }
 
 module.exports = createApp;
